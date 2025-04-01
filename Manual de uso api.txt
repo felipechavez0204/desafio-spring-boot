@@ -1,0 +1,133 @@
+Autenticación y Registro
+
+Registro de Usuario
+Endpoint: POST /api/auth/register
+
+Requiere autenticación? No
+
+Cuerpo de la solicitud (JSON):
+{
+  "username": "usuario123",
+  "password": "clave123",
+  "email": "usuario@example.com"
+}
+
+Respuestas esperadas:
+201 Created: Usuario registrado con éxito
+400 Bad Request: El usuario ya existe
+
+---------------------------------------
+
+
+ Inicio de Sesión
+
+Endpoint: POST /api/auth/login
+
+Requiere autenticación? No
+
+Cuerpo de la solicitud (JSON):
+{
+  "username": "usuario123",
+  "password": "clave123"
+}
+
+Respuestas esperadas:
+200 OK: Retorna un token JWT
+401 Unauthorized: Credenciales incorrectas
+
+Ejemplo de respuesta exitosa:
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9..."
+}
+ Guarda este token, ya que es necesario para autenticar solicitudes a los endpoints protegidos.
+
+--------------------------------
+
+Endpoints de Tareas
+ Crear una Tarea
+Endpoint: POST /api/tasks
+Requiere autenticación? Sí (Enviar token en el Header Authorization)
+Cuerpo de la solicitud (JSON):
+
+{
+  "title": "Nueva tarea",
+  "description": "Descripcion de la tarea"
+}
+
+Ejemplo de uso en Postman:
+
+Headers:
+Authorization: Bearer [TOKEN]
+Content-Type: application/json
+
+Respuestas esperadas:
+201 Created: Tarea creada con éxito
+401 Unauthorized: No se envió un token válido
+
+------------------------------------
+
+Listar Tareas
+Endpoint: GET /api/tasks
+Requiere autenticación? Sí
+Ejemplo de respuesta:
+[
+  {
+    "id": 1,
+    "title": "Nueva tarea",
+    "description": "Descripcion de la tarea"
+  }
+]
+-----------------------------------
+
+ Obtener una Tarea por ID
+
+Endpoint: GET /api/tasks/{id}
+Requiere autenticación? Sí
+Ejemplo de respuesta:
+{
+  "id": 1,
+  "title": "Nueva tarea",
+  "description": "Descripcion de la tarea"
+}
+
+---------------------------------------
+ Actualizar una Tarea
+
+Endpoint: PUT /api/tasks/{id}
+Requiere autenticación? Sí
+Cuerpo de la solicitud (JSON):
+{
+  "title": "Tarea actualizada",
+  "description": "Nueva descripción"
+}
+
+Respuestas esperadas:
+200 OK: Tarea actualizada
+404 Not Found: Tarea no encontrada
+
+---------------------------------------
+
+ Eliminar una Tarea
+
+Endpoint: DELETE /api/tasks/{id}
+Requiere autenticación? Sí
+Respuestas esperadas:
+
+204 No Content: Tarea eliminada con éxito
+404 Not Found: Tarea no encontrada
+
+---------------------------------
+
+Registrar un usuario (POST /api/auth/register)
+
+Iniciar sesión y obtener el token (POST /api/auth/login)
+
+Copiar el token y agregarlo en los headers de las peticiones protegidas:
+Authorization: Bearer [TOKEN]
+Realizar operaciones sobre tareas (POST****, GET, PUT, DELETE) usando el token.
+
+---------------------------------
+
+Consideraciones Finales
+Si obtienes 403 Forbidden, revisa que estés enviando el token correctamente.
+Si el token expira, inicia sesión nuevamente para obtener uno nuevo.
